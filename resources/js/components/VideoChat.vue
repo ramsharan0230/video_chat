@@ -34,17 +34,23 @@ export default {
         let peer = new Peer({
           initiator,
           stream: this.stream,
-          trickle: false
+          trickle: true
         });
         peer.on('signal', (data) => {
           this.channel.trigger(`client-signal-${userId}`, {
             userId: this.user.id,
-            data: data
+            data: data,
+            type: "signal",
+            userName: this.user.name
           });
         })
         .on('stream', (stream) => {
-          const videoThere = this.$refs['video-there'];
-          videoThere.srcObject = stream;
+          try{
+            const videoThere = this.$refs['video-there'];
+            videoThere.srcObject = stream;
+          }catch(error){
+            console.log(error)
+          }
         })
         .on('close', () => {
           const peer = this.peers[userId];
